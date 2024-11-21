@@ -16,7 +16,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="client in clients" :key="client.id">
+                <tr v-for="client in updatedClientList" :key="client.id">
                     <td>{{ client.name }}</td>
                     <td>{{ client.email }}</td>
                     <td>{{ client.phone }}</td>
@@ -39,9 +39,22 @@ export default {
 
     props: ['clients'],
 
+    data() {
+        return {
+            updatedClientList: this.clients
+        };
+    },
+
     methods: {
         deleteClient(client) {
-            axios.delete(`/clients/${client.id}`);
+            axios.delete(`/clients/${client.id}`)
+                .then(({data}) => {
+                    this.updatedClientList = this.updatedClientList.filter(b => b.id !== client.id);
+                    this.$toast.success(data.message || "Client deleted successfully!");
+                })
+                .catch((error) => {
+                    this.$toast.error("An error occurred while deleting the client.");
+                });
         }
     }
 }
