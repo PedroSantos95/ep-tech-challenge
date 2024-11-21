@@ -25,7 +25,7 @@ class ClientsController extends Controller
 
     public function show($client)
     {
-        $client = Client::where('id', $client)->first();
+        $client = Client::with('bookings:id,start,end,notes,client_id')->findOrFail($client);
 
         return view('clients.show', ['client' => $client]);
     }
