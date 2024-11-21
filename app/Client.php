@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Client extends Model
 {
@@ -13,6 +14,7 @@ class Client extends Model
         'address',
         'city',
         'postcode',
+        'user_id'
     ];
 
     protected $appends = [
@@ -32,5 +34,10 @@ class Client extends Model
     public function getUrlAttribute()
     {
         return "/clients/" . $this->id;
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 }

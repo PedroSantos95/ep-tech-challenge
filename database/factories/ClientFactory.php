@@ -4,6 +4,7 @@
 
 use App\Client;
 use Faker\Generator as Faker;
+use App\User;
 
 $factory->define(Client::class, function (Faker $faker) {
     return [
@@ -13,5 +14,8 @@ $factory->define(Client::class, function (Faker $faker) {
         'address' => $faker->streetAddress,
         'city' => $faker->city,
         'postcode' => $faker->postcode,
+        'user_id' => function () {
+            return factory(User::class)->create()->id;
+        },
     ];
 });
