@@ -10,7 +10,7 @@ use Illuminate\View\View;
 
 class ClientsController extends Controller
 {
-    public function index()
+    public function index(): View
     {
         $clients = auth()->user()->clients;
 
@@ -21,7 +21,7 @@ class ClientsController extends Controller
         return view('clients.index', ['clients' => $clients]);
     }
 
-    public function create()
+    public function create(): View
     {
         return view('clients.create');
     }

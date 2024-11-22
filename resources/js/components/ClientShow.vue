@@ -22,7 +22,10 @@
                             </tr>
                             <tr>
                                 <th class="text-gray-600 pr-3">Address</th>
-                                <td>{{ client.address }}<br/>{{ client.postcode + ' ' + client.city }}</td>
+                                <td>
+                                    {{ client.address }}<br/>
+                                    {{ client.postcode || '' }} {{ client.city || '' }}
+                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -31,12 +34,12 @@
 
             <div class="w-2/3">
                 <div>
-                    <button class="btn" :class="{'btn-primary': currentTab == 'bookings', 'btn-default': currentTab != 'bookings'}" @click="switchTab('bookings')">Bookings</button>
-                    <button class="btn" :class="{'btn-primary': currentTab == 'journals', 'btn-default': currentTab != 'journals'}" @click="switchTab('journals')">Journals</button>
+                    <button class="btn" :class="{'btn-primary': currentTab === 'bookings', 'btn-default': currentTab !== 'bookings'}" @click="switchTab('bookings')">Bookings</button>
+                    <button class="btn" :class="{'btn-primary': currentTab === 'journals', 'btn-default': currentTab !== 'journals'}" @click="switchTab('journals')">Journals</button>
                 </div>
 
                 <!-- Bookings -->
-                <div class="bg-white rounded p-4" v-if="currentTab == 'bookings'">
+                <div class="bg-white rounded p-4" v-if="currentTab === 'bookings'">
                     <h3 class="mb-3">List of client bookings</h3>
 
                     <div class="mb-5">
