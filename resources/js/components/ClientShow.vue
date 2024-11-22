@@ -138,15 +138,25 @@ export default {
             const now = new Date();
             return this.client.bookings.filter(booking => {
                 const bookingDate = new Date(booking.start);
+
                 if (this.bookingFilter === 'future') {
                     return bookingDate >= now;
                 }
+
                 if (this.bookingFilter === 'past') {
                     return bookingDate < now;
                 }
+
                 return true;
             });
         },
+    },
+
+    mounted() {
+        const referrer = document.referrer;
+        if(referrer && referrer.includes(`/clients/${this.client.id}/journals/create`)){
+            this.switchTab('journals');
+        }
     },
 
     methods: {
@@ -162,6 +172,7 @@ export default {
             axios.delete(`/clients/${this.client.id}/journals/${journal.id}`)
                 .then(({ data }) => {
                     this.updatedClientJournalsList = this.updatedClientJournalsList.filter(b => b.id !== journal.id);
+
                     this.$toast.success(data.message || "Journal deleted successfully!");
                 })
                 .catch((error) => {
