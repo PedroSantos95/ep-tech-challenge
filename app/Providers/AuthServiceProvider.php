@@ -3,7 +3,9 @@
 namespace App\Providers;
 
 use App\Client;
+use App\Journal;
 use App\Policies\ClientPolicy;
+use App\Policies\JournalPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
 
@@ -16,6 +18,7 @@ class AuthServiceProvider extends ServiceProvider
      */
     protected $policies = [
         Client::class => ClientPolicy::class,
+        Journal::class => JournalPolicy::class,
     ];
 
     /**

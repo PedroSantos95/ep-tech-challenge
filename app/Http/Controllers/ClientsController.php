@@ -28,9 +28,14 @@ class ClientsController extends Controller
 
     public function show(int $client): View
     {
-        $client = Client::with(['bookings' => function ($query) {
-            return $query->select('id', 'start', 'end', 'notes', 'client_id')->orderByDesc('start');
-        }])
+        $client = Client::with([
+            'bookings' => function ($query) {
+                return $query->select('id', 'start', 'end', 'notes', 'client_id')->orderByDesc('start');
+            },
+            'journals' => function ($query) {
+                $query->orderByDesc('date');
+            }
+        ])
             ->findOrFail($client);
 
         $this->authorize('view', $client);
