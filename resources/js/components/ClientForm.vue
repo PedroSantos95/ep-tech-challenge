@@ -6,14 +6,17 @@
             <div class="form-group">
                 <label for="name">Name</label>
                 <input type="text" id="name" class="form-control" v-model="client.name">
+                <span class="text-red-600" v-for="error in errors?.name">{{ error }}</span>
             </div>
             <div class="form-group">
                 <label for="email">Email</label>
-                <input type="text" id="email" class="form-control" v-model="client.email">
+                <input type="email" id="email" class="form-control" v-model="client.email">
+                <span class="text-red-600" v-for="error in errors?.email">{{ error }}</span>
             </div>
             <div class="form-group">
                 <label for="phone">Phone</label>
                 <input type="text" id="phone" class="form-control" v-model="client.phone">
+                <span class="text-red-600" v-for="error in errors?.phone">{{ error }}</span>
             </div>
             <div class="form-group">
                 <label for="name">Address</label>
@@ -53,7 +56,8 @@ export default {
                 address: '',
                 city: '',
                 postcode: '',
-            }
+            },
+            errors: {}
         }
     },
 
@@ -62,6 +66,9 @@ export default {
             axios.post('/clients', this.client)
                 .then((data) => {
                     window.location.href = data.data.url;
+                })
+                .catch(error => {
+                    this.errors = error.response.data.errors
                 });
         }
     }

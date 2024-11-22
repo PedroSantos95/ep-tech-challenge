@@ -3,13 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Client;
+use App\Http\Requests\StoreClientRequest;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class ClientsController extends Controller
 {
-    public function index()
+    public function index(): View
     {
-        $clients = Client::all();
+        $clients = auth()->user()->clients;
 
         foreach ($clients as $client) {
             $client->append('bookings_count');
@@ -18,36 +21,53 @@ class ClientsController extends Controller
         return view('clients.index', ['clients' => $clients]);
     }
 
-    public function create()
+    public function create(): View
     {
         return view('clients.create');
     }
 
-    public function show($client)
+    public function show(int $client): View
     {
-        $client = Client::where('id', $client)->first();
+        $client = Client::with([
+            'bookings' => function ($query) {
+                return $query->select('id', 'start', 'end', 'notes', 'client_id')->orderByDesc('start');
+            },
+            'journals' => function ($query) {
+                $query->orderByDesc('date');
+            }
+        ])
+            ->findOrFail($client);
+
+        $this->authorize('view', $client);
 
         return view('clients.show', ['client' => $client]);
     }
 
-    public function store(Request $request)
+    public function store(StoreClientRequest $request): Client
     {
         $client = new Client;
         $client->name = $request->get('name');
         $client->email = $request->get('email');
         $client->phone = $request->get('phone');
-        $client->adress = $request->get('adress');
+        $client->address = $request->get('address');
         $client->city = $request->get('city');
         $client->postcode = $request->get('postcode');
+        $client->user_id = auth()->id();
         $client->save();
 
         return $client;
     }
 
-    public function destroy($client)
+    public function destroy(int $client): JsonResponse
     {
-        Client::where('id', $client)->delete();
+        $client = Client::findOrFail($client);
 
-        return 'Deleted';
+        $this->authorize('delete', $client);
+
+        $client->delete();
+
+        return response()->json([
+            'message' => 'Client deleted successfully.'
+        ], 200);
     }
 }

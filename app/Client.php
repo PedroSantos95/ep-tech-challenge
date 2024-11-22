@@ -2,17 +2,22 @@
 
 namespace App;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Client extends Model
 {
+    use HasFactory;
     protected $fillable = [
         'name',
         'email',
         'phone',
-        'adress',
+        'address',
         'city',
         'postcode',
+        'user_id'
     ];
 
     protected $appends = [
@@ -32,5 +37,15 @@ class Client extends Model
     public function getUrlAttribute()
     {
         return "/clients/" . $this->id;
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function journals(): HasMany
+    {
+        return $this->hasMany(Journal::class);
     }
 }
