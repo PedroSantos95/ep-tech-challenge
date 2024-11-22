@@ -15,6 +15,7 @@
             </div>
             <div class="form-group">
                 <label for="phone">Phone</label>
+                <input type="text" id="phone" class="form-control" v-model="client.phone">
                 <span class="text-red-600" v-for="error in errors?.phone">{{ error }}</span>
             </div>
             <div class="form-group">
