@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Client;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class ClientsController extends Controller
 {
@@ -24,9 +25,12 @@ class ClientsController extends Controller
         return view('clients.create');
     }
 
-    public function show($client)
+    public function show(int $client): View
     {
-        $client = Client::with('bookings:id,start,end,notes,client_id')->findOrFail($client);
+        $client = Client::with(['bookings' => function ($query) {
+            return $query->select('id', 'start', 'end', 'notes', 'client_id')->orderByDesc('start');
+        }])
+            ->findOrFail($client);
 
         $this->authorize('view', $client);
 
